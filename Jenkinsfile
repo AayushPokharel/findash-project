@@ -25,7 +25,6 @@ pipeline {
                     echo "Building Version: ${params.VERSION_TAG}"
                     
                     // Build Docker Image
-                    // We pass build-args to "bake" the configuration into the image for this demo
                     def appImage = docker.build("${NEXUS_REGISTRY}/${IMAGE_NAME}:${params.VERSION_TAG}")
 
                     // Login to Nexus and Push
@@ -44,11 +43,9 @@ pipeline {
                     echo "Starting Deployment for Tag: ${params.VERSION_TAG}..."
 
                     // 1. Clean up existing container (if any)
-                    // The '|| true' ensures the pipeline doesn't fail if the container doesn't exist yet
                     sh "docker rm -f ${CONTAINER_NAME} || true"
 
                     // 2. Determine configuration based on deployment type
-                    // In a real scenario, these configs might come from a ConfigMap or Helm Chart
                     def envColor = params.APP_COLOR
                     def envVersion = params.VERSION_TAG
 
